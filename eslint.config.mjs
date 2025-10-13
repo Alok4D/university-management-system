@@ -1,38 +1,37 @@
 // eslint.config.mjs
-import { defineConfig } from 'eslint/config';
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import prettierConfig from 'eslint-config-prettier';
+import prettierPlugin from 'eslint-plugin-prettier';
 import globals from 'globals';
 
-export default defineConfig({
-  root: true,
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    ecmaVersion: 2021,
-    sourceType: 'module',
+export default tseslint.config(
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  prettierConfig,
+  {
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        ecmaVersion: 2021,
+        sourceType: 'module',
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        process: 'readonly',
+      },
+    },
+    plugins: {
+      prettier: prettierPlugin, // 🔥 plugin define করা হয়েছে
+    },
+    rules: {
+      'no-unused-vars': 'error',
+      'no-unused-expressions': 'error',
+      'prefer-const': 'error',
+      'no-console': 'warn',
+     
+      'prettier/prettier': 'error', // ✅ এখন কাজ করবে
+    },
   },
-  plugins: ['@typescript-eslint', 'prettier'],
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'prettier',
-  ],
-  env: {
-    browser: true,
-    node: true,
-    es2021: true,
-  },
-  globals: {
-    ...globals.browser,
-    process: 'readonly',
-  },
-  rules: {
-    'no-unused-vars': 'error',
-    'no-unused-expressions': 'error',
-    'prefer-const': 'error',
-    'no-console': 'off',
-    eqeqeq: 'error',
-    curly: 'error',
-    semi: ['error', 'always'],
-    quotes: ['error', 'double'],
-    'prettier/prettier': 'error',
-  },
-});
+);
