@@ -1,9 +1,9 @@
 // eslint.config.mjs
-import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import prettierConfig from 'eslint-config-prettier';
-import prettierPlugin from 'eslint-plugin-prettier';
-import globals from 'globals';
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
+import prettierConfig from "eslint-config-prettier";
+import prettierPlugin from "eslint-plugin-prettier";
+import globals from "globals";
 
 export default tseslint.config(
   js.configs.recommended,
@@ -14,24 +14,33 @@ export default tseslint.config(
       parser: tseslint.parser,
       parserOptions: {
         ecmaVersion: 2021,
-        sourceType: 'module',
+        sourceType: "module",
       },
       globals: {
         ...globals.browser,
         ...globals.node,
-        process: 'readonly',
+        process: "readonly",
       },
     },
     plugins: {
-      prettier: prettierPlugin, // 🔥 plugin define করা হয়েছে
+      prettier: prettierPlugin,
     },
     rules: {
-      'no-unused-vars': 'error',
-      'no-unused-expressions': 'error',
-      'prefer-const': 'error',
-      'no-console': 'warn',
-     
-      'prettier/prettier': 'error', // ✅ এখন কাজ করবে
+      "no-unused-vars": "error",
+      "no-unused-expressions": "error",
+      "prefer-const": "error",
+      "no-console": "warn",
+      "prettier/prettier": [
+        "error",
+        {
+          endOfLine: "auto", // 🔥 CRLF vs LF problem fixed
+          semi: true,
+          singleQuote: false,
+          printWidth: 100,
+          tabWidth: 2,
+          trailingComma: "es5",
+        },
+      ],
     },
-  },
+  }
 );
