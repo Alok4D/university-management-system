@@ -24,18 +24,18 @@ export interface Student {
   id: string;
   name: UserName;
   password: string;
-  gender: "Male" | "Female" | "other";
+  gender: 'Male' | 'Female' | 'other';
   dateOfBirth?: string;
   email: string;
   avatar?: string;
   contactNo: string;
   emergenceyContactNo: string;
-  bloodGroup?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
+  bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   parentAddress: string;
   permanentAddress: string;
   guardian: Guardian;
   localGuardian: LocalGuardian;
   profileImage?: string;
-  isActive: "active" | "blocked";
+  isActive: 'active' | 'blocked';
   isDeleted: boolean;
 }

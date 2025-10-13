@@ -1,69 +1,77 @@
-// import { Schema, model } from "mongoose";
-// import { Student, Guardian, LocalGuardian, UserName } from "./student.interface";
+import { Schema, model } from 'mongoose';
+import {
+  Guardian,
+  LocalGuardian,
+  Student,
+  UserName,
+} from './student.interface';
+
 // // import bcrypt from "bcrypt";
 
-// const userNameSchema = new Schema<UserName>(
-//   {
-//     firstName: String,
-//     middleName: String,
-//     lastName: String,
-//   },
-//   { _id: false }
-// );
+const userNameSchema = new Schema<UserName>(
+  {
+    firstName: String,
+    middleName: String,
+    lastName: String,
+  },
+  { _id: false },
+);
 
-// const guardianSchema = new Schema<Guardian>(
-//   {
-//     fatherName: String,
-//     fatherOccupation: String,
-//     fatherContactNo: String,
-//     motherName: String,
-//     motherOccupation: String,
-//     motherContactNo: String,
-//   },
-//   { _id: false }
-// );
+const guardianSchema = new Schema<Guardian>(
+  {
+    fatherName: String,
+    fatherOccupation: String,
+    fatherContactNo: String,
+    motherName: String,
+    motherOccupation: String,
+    motherContactNo: String,
+  },
+  { _id: false },
+);
 
-// const localGuardianSchema = new Schema<LocalGuardian>(
-//   {
-//     name: String,
-//     occupation: String,
-//     contactNo: String,
-//     address: String,
-//   },
-//   { _id: false }
-// );
+const localGuardianSchema = new Schema<LocalGuardian>(
+  {
+    name: String,
+    occupation: String,
+    contactNo: String,
+    address: String,
+  },
+  { _id: false },
+);
 
-// const studentSchema = new Schema<Student>(
-//   {
-//     id: { type: String, required: true, unique: true },
-//     name: { type: userNameSchema, required: true },
-//     password: { type: String, required: true },
-//     gender: { type: String, enum: ["Male", "Female", "other"], required: true },
-//     dateOfBirth: String,
-//     email: { type: String, required: true, unique: true },
-//     contactNo: { type: String, required: true },
-//     emergenceyContactNo: { type: String, required: true },
-//     bloodGroup: {
-//       type: String,
-//       enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
-//     },
-//     parentAddress: { type: String, required: true },
-//     permanentAddress: { type: String, required: true },
-//     guardian: { type: guardianSchema, required: true },
-//     localGuardian: { type: localGuardianSchema, required: true },
-//     profileImage: { type: String, required: true },
-//     isActive: { type: String, enum: ["active", "blocked"], required: true },
-//     isDeleted: {
-//       type: Boolean,
-//       default: false,
-//     },
-//   },
-//   {
-//     timestamps: true,
-//     versionKey: false,
-//     toJSON: { virtuals: true },
-//   }
-// );
+const studentSchema = new Schema<Student>(
+  {
+    id: { type: String, required: true, unique: true },
+    name: { type: userNameSchema, required: true },
+    password: { type: String, required: true },
+    gender: { type: String, enum: ['Male', 'Female', 'other'], required: true },
+    dateOfBirth: String,
+    email: { type: String, required: true, unique: true },
+    contactNo: { type: String, required: true },
+    emergenceyContactNo: { type: String, required: true },
+    bloodGroup: {
+      type: String,
+      enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    },
+    parentAddress: { type: String, required: true },
+    permanentAddress: { type: String, required: true },
+    guardian: { type: guardianSchema, required: true },
+    localGuardian: { type: localGuardianSchema, required: true },
+    profileImage: { type: String, required: true },
+    isActive: { type: String, enum: ['active', 'blocked'], required: true },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    timestamps: true,
+    versionKey: false,
+    toJSON: { virtuals: true },
+  },
+);
+
+export const StudentModel = model<Student>('Student', studentSchema);
 
 // // virtual mongoose field added
 
@@ -101,5 +109,3 @@
 //   this.find({ isDeleted: { $ne: true } });
 //   next();
 // });
-
-// export const StudentModel = model<Student>("Student", studentSchema);

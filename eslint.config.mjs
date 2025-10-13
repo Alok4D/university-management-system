@@ -30,17 +30,6 @@ export default tseslint.config(
       "no-unused-expressions": "error",
       "prefer-const": "error",
       "no-console": "warn",
-      "prettier/prettier": [
-        "error",
-        {
-          endOfLine: "auto", // 🔥 CRLF vs LF problem fixed
-          semi: true,
-          singleQuote: false,
-          printWidth: 100,
-          tabWidth: 2,
-          trailingComma: "es5",
-        },
-      ],
     },
   }
 );
