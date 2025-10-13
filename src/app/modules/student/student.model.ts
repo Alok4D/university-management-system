@@ -1,14 +1,16 @@
 import { Schema, model } from 'mongoose';
 import {
-  Guardian,
-  LocalGuardian,
-  Student,
-  UserName,
+  TGuardian,
+  TLocalGuardian,
+  TStudent,
+  StudentMethods,
+  StudentModel,
+  TUserName,
 } from './student.interface';
 
 // // import bcrypt from "bcrypt";
 
-const userNameSchema = new Schema<UserName>(
+const userNameSchema = new Schema<TUserName>(
   {
     firstName: String,
     middleName: String,
@@ -17,7 +19,7 @@ const userNameSchema = new Schema<UserName>(
   { _id: false },
 );
 
-const guardianSchema = new Schema<Guardian>(
+const guardianSchema = new Schema<TGuardian>(
   {
     fatherName: String,
     fatherOccupation: String,
@@ -29,7 +31,7 @@ const guardianSchema = new Schema<Guardian>(
   { _id: false },
 );
 
-const localGuardianSchema = new Schema<LocalGuardian>(
+const localGuardianSchema = new Schema<TLocalGuardian>(
   {
     name: String,
     occupation: String,
@@ -39,7 +41,7 @@ const localGuardianSchema = new Schema<LocalGuardian>(
   { _id: false },
 );
 
-const studentSchema = new Schema<Student>(
+const studentSchema = new Schema<TStudent, StudentModel>(
   {
     id: { type: String, required: true, unique: true },
     name: { type: userNameSchema, required: true },
@@ -71,7 +73,19 @@ const studentSchema = new Schema<Student>(
   },
 );
 
-export const StudentModel = model<Student>('Student', studentSchema);
+//creating a custom static method
+studentSchema.statics.isUserExists = async function (id: string) {
+  const existingUser = await Student.findOne({ id });
+  return existingUser;
+};
+
+//creating a custom instance method
+// studentSchema.methods.isUserExists = async function (id: string) {
+//   const existingUser = await Student.findOne({ id });
+//   return existingUser;
+// };
+
+export const Student = model<TStudent, StudentModel>('Student', studentSchema);
 
 // // virtual mongoose field added
 
