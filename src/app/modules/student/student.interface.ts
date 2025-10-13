@@ -1,4 +1,4 @@
-import { StudentModel } from './student.interface';
+
 import { Model } from 'mongoose';
 
 export interface TGuardian {

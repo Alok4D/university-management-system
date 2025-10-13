@@ -3,12 +3,12 @@ import {
   TGuardian,
   TLocalGuardian,
   TStudent,
-  StudentMethods,
   StudentModel,
   TUserName,
 } from './student.interface';
 
-// // import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
 const userNameSchema = new Schema<TUserName>(
   {
@@ -73,13 +73,52 @@ const studentSchema = new Schema<TStudent, StudentModel>(
   },
 );
 
+// // virtual mongoose field added
+
+studentSchema.virtual("fullName").get(function () {
+  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
+});
+
+// pre save middleware / hook : we will work on create fuction
+studentSchema.pre('save', async function (next) {
+// eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds),
+  );
+  next();
+});
+
+//post save middleware /hook
+studentSchema.post('save', function (doc, next) {
+    doc.password=''
+  next();
+});
+
 //creating a custom static method
 studentSchema.statics.isUserExists = async function (id: string) {
   const existingUser = await Student.findOne({ id });
   return existingUser;
 };
 
-//creating a custom instance method
+// Query middleware
+studentSchema.pre("find", function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre("findOne", function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre("aggregate", function (next) {
+this.pipeline().unshift({$match: {isDeleted: {$ne: true}}});
+  next();
+});
+
+// creating a custom instance method
 // studentSchema.methods.isUserExists = async function (id: string) {
 //   const existingUser = await Student.findOne({ id });
 //   return existingUser;
@@ -87,39 +126,9 @@ studentSchema.statics.isUserExists = async function (id: string) {
 
 export const Student = model<TStudent, StudentModel>('Student', studentSchema);
 
-// // virtual mongoose field added
 
-// studentSchema.virtual("fullName").get(function () {
-//   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
-// });
 
-// // pre save middleware / hook : we will work on create fuction
 
-// studentSchema.pre("save", async function (next) {
-//   // console.log(this, 'pre hook : we will save data')
 
-//   // eslint-disable-next-line @typescript-eslint/no-this-alias
-//   const user = this;
-//   // hasing pass and save into db
-//   user.password = await bcrypt.hash(user.password, Number(process.env.BCRYPT_SALT_ROUNDS));
-//   next();
-// });
 
-// //post save middleware / hook
-// studentSchema.post("save", function (doc, next) {
-//   doc.password = "";
-//   next();
-// });
 
-// // Query middleware
-// studentSchema.pre("find", function (next) {
-//   // console.log(this);
-//   this.find({ isDeleted: { $ne: true } });
-//   next();
-// });
-
-// studentSchema.pre("findOne", function (next) {
-//   // console.log(this);
-//   this.find({ isDeleted: { $ne: true } });
-//   next();
-// });
