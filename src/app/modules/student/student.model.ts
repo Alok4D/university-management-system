@@ -7,9 +7,6 @@ import {
   TUserName,
 } from './student.interface';
 
-import bcrypt from 'bcrypt';
-import config from '../../config';
-
 const userNameSchema = new Schema<TUserName>(
   {
     firstName: String,
@@ -44,8 +41,13 @@ const localGuardianSchema = new Schema<TLocalGuardian>(
 const studentSchema = new Schema<TStudent, StudentModel>(
   {
     id: { type: String, required: true, unique: true },
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'User id is required'],
+      unique: true,
+      ref: 'User',
+    },
     name: { type: userNameSchema, required: true },
-    password: { type: String, required: true },
     gender: { type: String, enum: ['Male', 'Female', 'other'], required: true },
     dateOfBirth: String,
     email: { type: String, required: true, unique: true },
@@ -60,7 +62,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     guardian: { type: guardianSchema, required: true },
     localGuardian: { type: localGuardianSchema, required: true },
     profileImage: { type: String, required: true },
-    isActive: { type: String, enum: ['active', 'blocked'], required: true },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -75,25 +76,8 @@ const studentSchema = new Schema<TStudent, StudentModel>(
 
 // // virtual mongoose field added
 
-studentSchema.virtual("fullName").get(function () {
+studentSchema.virtual('fullName').get(function () {
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
-});
-
-// pre save middleware / hook : we will work on create fuction
-studentSchema.pre('save', async function (next) {
-// eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds),
-  );
-  next();
-});
-
-//post save middleware /hook
-studentSchema.post('save', function (doc, next) {
-    doc.password=''
-  next();
 });
 
 //creating a custom static method
@@ -103,18 +87,18 @@ studentSchema.statics.isUserExists = async function (id: string) {
 };
 
 // Query middleware
-studentSchema.pre("find", function (next) {
+studentSchema.pre('find', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 
-studentSchema.pre("findOne", function (next) {
+studentSchema.pre('findOne', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 
-studentSchema.pre("aggregate", function (next) {
-this.pipeline().unshift({$match: {isDeleted: {$ne: true}}});
+studentSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
 
@@ -125,10 +109,3 @@ this.pipeline().unshift({$match: {isDeleted: {$ne: true}}});
 // };
 
 export const Student = model<TStudent, StudentModel>('Student', studentSchema);
-
-
-
-
-
-
-

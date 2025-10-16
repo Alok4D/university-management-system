@@ -1,23 +1,14 @@
 import { TStudent } from './student.interface';
 import { Student } from './student.model';
 
-const createStudentIntoDB = async (studentData: TStudent) => {
-  if (await Student.isUserExists(studentData.id)) {
-    throw new Error('User already exists!');
-  }
-  const result = await Student.create(studentData);
+//   return result; // build in static method
 
-  //   return result; // build in static method
+//   const student = new Student(studentData); // create an instance
 
-  //   const student = new Student(studentData); // create an instance
-
-  //   if(await student.isUserExists(studentData.id)){
-  //     throw new Error("User already exists!")
-  //   }
-
-  //   const result = await student.save(); // build in instance method
-  return result;
-};
+//   if(await student.isUserExists(studentData.id)){
+//     throw new Error("User already exists!")
+//   }
+//   const result = await student.save(); // build in instance method
 
 const getAllStudentsFromDB = async () => {
   const result = await Student.find();
@@ -30,15 +21,17 @@ const getSingleStudentFromDB = async (id: string) => {
   return result;
 };
 
-const updateSingleStudentFromDB = async (id: string, payload: Partial<TStudent>) => {
+const updateSingleStudentFromDB = async (
+  id: string,
+  payload: Partial<TStudent>,
+) => {
   const result = await Student.findOneAndUpdate(
     { id },
     { $set: payload },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   );
   return result;
 };
-
 
 const deleteStudentFromDB = async (id: string) => {
   const result = await Student.updateOne({ id }, { isDeleted: true });
@@ -46,9 +39,8 @@ const deleteStudentFromDB = async (id: string) => {
 };
 
 export const StudentServices = {
-  createStudentIntoDB,
   getAllStudentsFromDB,
   getSingleStudentFromDB,
   deleteStudentFromDB,
-  updateSingleStudentFromDB
+  updateSingleStudentFromDB,
 };
