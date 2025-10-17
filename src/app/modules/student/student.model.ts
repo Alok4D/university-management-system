@@ -52,7 +52,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     dateOfBirth: String,
     email: { type: String, required: true, unique: true },
     contactNo: { type: String, required: true },
-    emergenceyContactNo: { type: String, required: true },
+    emergencyContactNo: { type: String, required: true },
     bloodGroup: {
       type: String,
       enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
@@ -101,11 +101,5 @@ studentSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
-
-// creating a custom instance method
-// studentSchema.methods.isUserExists = async function (id: string) {
-//   const existingUser = await Student.findOne({ id });
-//   return existingUser;
-// };
 
 export const Student = model<TStudent, StudentModel>('Student', studentSchema);

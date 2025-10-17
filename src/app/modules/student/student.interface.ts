@@ -33,7 +33,7 @@ export interface TStudent {
   email: string;
   avatar?: string;
   contactNo: string;
-  emergenceyContactNo: string;
+  emergencyContactNo: string;
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   parentAddress: string;
   permanentAddress: string;
