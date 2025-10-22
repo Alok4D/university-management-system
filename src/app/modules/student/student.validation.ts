@@ -2,25 +2,40 @@ import { z } from 'zod';
 
 /* ---------------- Enum values ---------------- */
 const genderEnum = ['Male', 'Female', 'other'] as const;
-const bloodGroupEnum = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as const;
+const bloodGroupEnum = [
+  'A+',
+  'A-',
+  'B+',
+  'B-',
+  'AB+',
+  'AB-',
+  'O+',
+  'O-',
+] as const;
 
 /* ---------------- UserName ---------------- */
 const userNameValidationZodSchema = z.object({
   firstName: z
     .string()
     .min(1, 'First name is required')
-    .regex(/^[A-Z][a-zA-Z]*$/, 'First name must start with an uppercase letter and contain only letters'),
+    .regex(
+      /^[A-Z][a-zA-Z]*$/,
+      'First name must start with an uppercase letter and contain only letters',
+    ),
   middleName: z
     .string()
     .optional()
     .refine(
-      val => !val || /^[A-Z][a-z]*$/.test(val),
-      'Middle name must start with an uppercase letter and the rest lowercase letters'
+      (val) => !val || /^[A-Z][a-z]*$/.test(val),
+      'Middle name must start with an uppercase letter and the rest lowercase letters',
     ),
   lastName: z
     .string()
     .min(1, 'Last name is required')
-    .regex(/^[A-Z][a-z]*$/, 'Last name must start with an uppercase letter and the rest lowercase letters'),
+    .regex(
+      /^[A-Z][a-z]*$/,
+      'Last name must start with an uppercase letter and the rest lowercase letters',
+    ),
 });
 
 /* ---------------- Guardian ---------------- */
@@ -44,22 +59,26 @@ const localGuardianZodValidationSchema = z.object({
 /* ---------------- Main Student ---------------- */
 const studentValidationSchema = z.object({
   name: userNameValidationZodSchema,
-  gender: z.enum(genderEnum).refine(
-    val => genderEnum.includes(val),
-    { message: 'Gender must be Male, Female, or other' }
-  ),
+  gender: z
+    .enum(genderEnum)
+    .refine((val) => genderEnum.includes(val), {
+      message: 'Gender must be Male, Female, or other',
+    }),
   dateOfBirth: z.string().optional(),
   email: z.string().email('Please provide a valid email address'),
   contactNo: z.string().min(1, 'Contact number is required'),
   emergencyContactNo: z.string().min(1, 'Emergency contact number is required'),
-  bloodGroup: z.enum(bloodGroupEnum).optional().refine(
-    val => !val || bloodGroupEnum.includes(val),
-    { message: 'Invalid blood group' }
-  ),
+  bloodGroup: z
+    .enum(bloodGroupEnum)
+    .optional()
+    .refine((val) => !val || bloodGroupEnum.includes(val), {
+      message: 'Invalid blood group',
+    }),
   parentAddress: z.string().min(1, 'Parent address is required'),
   permanentAddress: z.string().min(1, 'Permanent address is required'),
   guardian: guardianZodValidationSchema,
   localGuardian: localGuardianZodValidationSchema,
+  admissionSemester: z.string(),
   profileImage: z.string().min(1, 'Profile image is required'),
 });
 
@@ -72,7 +91,10 @@ export const createStudentZodValidationSchema = z.object({
     .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
     .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
     .regex(/[0-9]/, 'Password must contain at least one number')
-    .regex(/[@$!%*?&]/, 'Password must contain at least one special character (@, $, !, %, *, ?, &)'),
+    .regex(
+      /[@$!%*?&]/,
+      'Password must contain at least one special character (@, $, !, %, *, ?, &)',
+    ),
   student: studentValidationSchema,
 });
 
