@@ -13,7 +13,7 @@ const bloodGroupEnum = [
   'O-',
 ] as const;
 
-/* ---------------- UserName ---------------- */
+/* ---------------- UserName Schema ---------------- */
 const userNameValidationZodSchema = z.object({
   firstName: z
     .string()
@@ -24,11 +24,12 @@ const userNameValidationZodSchema = z.object({
     ),
   middleName: z
     .string()
+    .regex(/^[A-Z]?[a-z]*$/, {
+      message:
+        'Middle name must start with an uppercase letter and contain only letters',
+    })
     .optional()
-    .refine(
-      (val) => !val || /^[A-Z][a-z]*$/.test(val),
-      'Middle name must start with an uppercase letter and the rest lowercase letters',
-    ),
+    .or(z.literal('').optional()), // allow empty string
   lastName: z
     .string()
     .min(1, 'Last name is required')
@@ -38,7 +39,7 @@ const userNameValidationZodSchema = z.object({
     ),
 });
 
-/* ---------------- Guardian ---------------- */
+/* ---------------- Guardian Schema ---------------- */
 const guardianZodValidationSchema = z.object({
   fatherName: z.string().min(1, 'Father name is required'),
   fatherOccupation: z.string().min(1, 'Father occupation is required'),
@@ -48,7 +49,7 @@ const guardianZodValidationSchema = z.object({
   motherContactNo: z.string().min(1, 'Mother contact number is required'),
 });
 
-/* ---------------- Local Guardian ---------------- */
+/* ---------------- Local Guardian Schema ---------------- */
 const localGuardianZodValidationSchema = z.object({
   name: z.string().min(1, 'Local guardian name is required'),
   occupation: z.string().min(1, 'Local guardian occupation is required'),
@@ -56,36 +57,32 @@ const localGuardianZodValidationSchema = z.object({
   address: z.string().min(1, 'Local guardian address is required'),
 });
 
-/* ---------------- Main Student ---------------- */
+/* ---------------- Main Student Schema ---------------- */
 const studentValidationSchema = z.object({
   name: userNameValidationZodSchema,
-  gender: z
-    .enum(genderEnum)
-    .refine((val) => genderEnum.includes(val), {
-      message: 'Gender must be Male, Female, or other',
-    }),
+  gender: z.enum(genderEnum, { message: 'Gender must be Male, Female, or other' }),
   dateOfBirth: z.string().optional(),
-  email: z.string().email('Please provide a valid email address'),
+  email: z
+    .string()
+    .nonempty('Email is required')
+    .email('Please provide a valid email address'),
   contactNo: z.string().min(1, 'Contact number is required'),
   emergencyContactNo: z.string().min(1, 'Emergency contact number is required'),
-  bloodGroup: z
-    .enum(bloodGroupEnum)
-    .optional()
-    .refine((val) => !val || bloodGroupEnum.includes(val), {
-      message: 'Invalid blood group',
-    }),
+  bloodGroup: z.enum(bloodGroupEnum).optional(),
   parentAddress: z.string().min(1, 'Parent address is required'),
   permanentAddress: z.string().min(1, 'Permanent address is required'),
   guardian: guardianZodValidationSchema,
   localGuardian: localGuardianZodValidationSchema,
-  admissionSemester: z.string(),
-  profileImage: z.string().min(1, 'Profile image is required'),
+  admissionSemester: z.string().min(1, 'Admission semester is required'),
+  academicDepartment: z.string().optional(),
+  profileImage: z.string().url('Profile image must be a valid URL'),
 });
 
-/* ---------------- Create Student ---------------- */
+/* ---------------- Create Student Schema ---------------- */
 export const createStudentZodValidationSchema = z.object({
   password: z
     .string()
+    .nonempty('Password is required')
     .min(8, 'Password must be at least 8 characters long')
     .max(32, 'Password cannot exceed 32 characters')
     .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
@@ -98,7 +95,30 @@ export const createStudentZodValidationSchema = z.object({
   student: studentValidationSchema,
 });
 
+/* ---------------- Update Student Schema ---------------- */
+export const updateStudentZodValidationSchema = z.object({
+  student: z
+    .object({
+      name: userNameValidationZodSchema.partial(),
+      gender: z.enum(genderEnum).optional(),
+      dateOfBirth: z.string().optional(),
+      email: z.string().email('Invalid email address').optional(),
+      contactNo: z.string().optional(),
+      emergencyContactNo: z.string().optional(),
+      bloodGroup: z.enum(bloodGroupEnum).optional(),
+      parentAddress: z.string().optional(),
+      permanentAddress: z.string().optional(),
+      guardian: guardianZodValidationSchema.partial().optional(),
+      localGuardian: localGuardianZodValidationSchema.partial().optional(),
+      admissionSemester: z.string().optional(),
+      academicDepartment: z.string().optional(),
+      profileImage: z.string().url('Invalid image URL').optional(),
+    })
+    .partial(),
+});
+
 /* ---------------- Export ---------------- */
 export const studentValidations = {
   createStudentZodValidationSchema,
+  updateStudentZodValidationSchema,
 };

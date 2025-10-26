@@ -1,8 +1,6 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import config from '../../config';
-
-
 import { TStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
 import { AcademicSemester } from './../academicSemester/academicSemester.model';
@@ -19,8 +17,11 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   userData.role = 'student';
 
   // find semester
-  const admissionSemester = await AcademicSemester.findById(payload.admissionSemester);
-  if (!admissionSemester) throw new AppError(httpStatus.BAD_REQUEST, 'Invalid Academic Semester');
+  const admissionSemester = await AcademicSemester.findById(
+    payload.admissionSemester,
+  );
+  if (!admissionSemester)
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid Academic Semester');
 
   const session = await mongoose.startSession();
 
@@ -32,7 +33,8 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
 
     // create user
     const newUser = await User.create([userData], { session });
-    if (!newUser.length) throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
+    if (!newUser.length)
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
 
     // assign user ID to student
     payload.id = newUser[0].id;
@@ -40,7 +42,8 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
 
     // create student
     const newStudent = await Student.create([payload], { session });
-    if (!newStudent.length) throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student');
+    if (!newStudent.length)
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student');
 
     await session.commitTransaction();
     await session.endSession();
@@ -49,7 +52,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   } catch (err) {
     await session.abortTransaction();
     await session.endSession();
-    throw err;
+    throw err; // failed to create student!
   }
 };
 

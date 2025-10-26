@@ -42,6 +42,7 @@ export interface TStudent {
   profileImage?: string;
   admissionSemester: Types.ObjectId;
   isDeleted?: boolean;
+  academicDepartment: Types.ObjectId;
 }
 
 // for creating instance

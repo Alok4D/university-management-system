@@ -12,6 +12,10 @@ const findLastStudentId = async () => {
 export const generateStudentId = async (payload: TAcademicSemester) => {
   const lastStudentId = await findLastStudentId();
 
+  // only for 4 digit years numbers
+  const academicYear = new Date(payload.year).getFullYear().toString(); 
+  const academicCode = payload.code; 
+
   let currentId = '0000';
 
   if (lastStudentId) {
@@ -19,7 +23,7 @@ export const generateStudentId = async (payload: TAcademicSemester) => {
     const lastStudentCode = lastStudentId.substring(4, 6);
     const lastIncrement = lastStudentId.substring(6);
 
-    if (lastStudentYear === payload.year && lastStudentCode === payload.code) {
+    if (lastStudentYear === academicYear && lastStudentCode === academicCode) {
       currentId = (parseInt(lastIncrement) + 1).toString().padStart(4, '0');
     } else {
       currentId = '0001';
@@ -28,6 +32,6 @@ export const generateStudentId = async (payload: TAcademicSemester) => {
     currentId = '0001';
   }
 
-  const newStudentId = `${payload.year}${payload.code}${currentId}`;
+  const newStudentId = `${academicYear}${academicCode}${currentId}`;
   return newStudentId;
 };

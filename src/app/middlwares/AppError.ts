@@ -10,8 +10,10 @@ class AppError extends Error {
     this.statusCode = statusCode;
     this.isOperational = isOperational;
 
-    // Only because we are extending a built-in class
+    // Proper prototype chain setup for built-in Error extension
     Object.setPrototypeOf(this, new.target.prototype);
+
+    // Capture stack trace for debugging (only in development)
     Error.captureStackTrace(this);
   }
 }
