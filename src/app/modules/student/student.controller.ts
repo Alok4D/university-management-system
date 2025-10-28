@@ -5,7 +5,8 @@ import sendResponse from '../../utlis/sendResponse';
 import catchAsync from '../../utlis/catchAsync';
 
 const getAllStudents = catchAsync(async (req, res) => {
-  const result = await StudentServices.getAllStudentsFromDB();
+
+  const result = await StudentServices.getAllStudentsFromDB(req.query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
