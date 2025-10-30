@@ -85,7 +85,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
 // // virtual mongoose field added
 
 studentSchema.virtual('fullName').get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
+  return `${this.name?.firstName} ${this.name?.middleName} ${this.name?.lastName}`;
 });
 
 //creating a custom static method
