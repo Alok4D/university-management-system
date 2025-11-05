@@ -3,7 +3,6 @@ import { CourseControllers } from './course.controller';
 import validateRequest from '../../middlwares/validateRequest';
 import { CourseValidations } from './course.validation';
 
-
 const router = express.Router();
 
 router.post(

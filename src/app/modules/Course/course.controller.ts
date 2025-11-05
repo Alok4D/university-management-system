@@ -3,7 +3,6 @@ import catchAsync from '../../utlis/catchAsync';
 import { CourseServices } from './course.service';
 import sendResponse from '../../utlis/sendResponse';
 
-
 const createCourse = catchAsync(async (req, res) => {
   const result = await CourseServices.createCourseIntoDB(req.body);
 
