@@ -1,15 +1,28 @@
 import express from 'express';
-import { UserController } from './user.controller';
-import { createStudentZodValidationSchema } from '../student/student.validation';
+import { createAdminValidationSchema } from '../Admin/admin.validation';
+import { createFacultyValidationSchema } from '../Faculty/faculty.validation';
+import { createStudentValidationSchema } from './../student/student.validation';
+import { UserControllers } from './user.controller';
 import validateRequest from '../../middlwares/validateRequest';
 
 const router = express.Router();
 
-// /api/v1/users
 router.post(
   '/create-student',
-  validateRequest(createStudentZodValidationSchema),
-  UserController.createStudent,
+  validateRequest(createStudentValidationSchema),
+  UserControllers.createStudent,
+);
+
+router.post(
+  '/create-faculty',
+  validateRequest(createFacultyValidationSchema),
+  UserControllers.createFaculty,
+);
+
+router.post(
+  '/create-admin',
+  validateRequest(createAdminValidationSchema),
+  UserControllers.createAdmin,
 );
 
 export const UserRoutes = router;

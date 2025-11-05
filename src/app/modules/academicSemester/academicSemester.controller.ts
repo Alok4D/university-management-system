@@ -1,39 +1,7 @@
 import httpStatus from 'http-status';
 import catchAsync from '../../utlis/catchAsync';
-import sendResponse from '../../utlis/sendResponse';
 import { AcademicSemesterServices } from './academicSemester.services';
-import { TAcademicSemester } from './academicSemester.interface';
-
-const getAllAcademicSemesterController = catchAsync(async (req, res) => {
-  const result = await AcademicSemesterServices.getAllAcademicSemester();
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Semester is created successfully',
-    data: result,
-  });
-});
-
-const getSingleAcademicSemesterController = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const result = await AcademicSemesterServices.getSingleAcademicSemester(id);
-
-  if (!result) {
-    return sendResponse(res, {
-      statusCode: 404,
-      success: false,
-      message: 'Semester not found',
-      data: null,
-    });
-  }
-  sendResponse(res, {
-    statusCode: 200,
-    success: true,
-    message: 'Semester retrieved successfully',
-    data: result,
-  });
-});
+import sendResponse from '../../utlis/sendResponse';
 
 const createAcademicSemester = catchAsync(async (req, res) => {
   const result = await AcademicSemesterServices.createAcademicSemesterIntoDB(
@@ -43,31 +11,53 @@ const createAcademicSemester = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Semester is created successfully',
+    message: 'Academic semester is created succesfully',
+    data: result,
+  });
+});
+
+const getAllAcademicSemesters = catchAsync(async (req, res) => {
+  const result = await AcademicSemesterServices.getAllAcademicSemestersFromDB();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Academic semesters are retrieved successfully',
+    data: result,
+  });
+});
+
+const getSingleAcademicSemester = catchAsync(async (req, res) => {
+  const { semesterId } = req.params;
+  const result =
+    await AcademicSemesterServices.getSingleAcademicSemesterFromDB(semesterId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Academic semester is retrieved succesfully',
     data: result,
   });
 });
 
 const updateAcademicSemester = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const payload: Partial<TAcademicSemester> = req.body;
-
+  const { semesterId } = req.params;
   const result = await AcademicSemesterServices.updateAcademicSemesterIntoDB(
-    id,
-    payload,
+    semesterId,
+    req.body,
   );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Semester updated successfully',
+    message: 'Academic semester is retrieved succesfully',
     data: result,
   });
 });
 
-export const AcademicSemesterController = {
+export const AcademicSemesterControllers = {
   createAcademicSemester,
-  getAllAcademicSemesterController,
-  getSingleAcademicSemesterController,
+  getAllAcademicSemesters,
+  getSingleAcademicSemester,
   updateAcademicSemester,
 };

@@ -1,4 +1,6 @@
+import httpStatus from 'http-status';
 import { Schema, model } from 'mongoose';
+import AppError from '../../errors/AppError';
 import { TAcademicDepartment } from './academicDepartment.interface';
 
 const academicDepartmentSchema = new Schema<TAcademicDepartment>(
@@ -7,29 +9,41 @@ const academicDepartmentSchema = new Schema<TAcademicDepartment>(
       type: String,
       required: true,
       unique: true,
-      trim: true,
     },
     academicFaculty: {
       type: Schema.Types.ObjectId,
       ref: 'AcademicFaculty',
-      required: true,
     },
   },
   {
     timestamps: true,
-    versionKey: false,
   },
 );
 
-// ✅ Pre-save middleware to prevent duplicate department names
 academicDepartmentSchema.pre('save', async function (next) {
-  const existingDepartment = await AcademicDepartment.findOne({
+  const isDepartmentExist = await AcademicDepartment.findOne({
     name: this.name,
   });
 
-  if (existingDepartment) {
-    const error = new Error('Academic Department already exists!');
-    return next(error);
+  if (isDepartmentExist) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'This department is already exist!',
+    );
+  }
+
+  next();
+});
+
+academicDepartmentSchema.pre('findOneAndUpdate', async function (next) {
+  const query = this.getQuery();
+  const isDepartmentExist = await AcademicDepartment.findOne(query);
+
+  if (!isDepartmentExist) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'This department does not exist! ',
+    );
   }
 
   next();

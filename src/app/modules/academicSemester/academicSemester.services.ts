@@ -1,38 +1,23 @@
-import { Types } from 'mongoose';
-import {
-  TAcademicSemester,
-  TAcademicSemesterNameCodeMapper,
-} from './academicSemester.interface';
+import { academicSemesterNameCodeMapper } from './academicSemester.constant';
+import { TAcademicSemester } from './academicSemester.interface';
 import { AcademicSemester } from './academicSemester.model';
 
-const getAllAcademicSemester = async () => {
-  const result = await AcademicSemester.find();
-  const total = await AcademicSemester.countDocuments();
-  return {
-    total,
-    result,
-  };
-};
-
-const getSingleAcademicSemester = async (id: string) => {
-  const objectId = new Types.ObjectId(id);
-  const result = await AcademicSemester.findById(objectId);
-  return result;
-};
-
-export const academicSemesterNameCodeMapper: TAcademicSemesterNameCodeMapper = {
-  Autumn: '01',
-  Summer: '02',
-  Fall: '03',
-};
-
 const createAcademicSemesterIntoDB = async (payload: TAcademicSemester) => {
-  // semester name --> semester code
   if (academicSemesterNameCodeMapper[payload.name] !== payload.code) {
     throw new Error('Invalid Semester Code');
   }
 
   const result = await AcademicSemester.create(payload);
+  return result;
+};
+
+const getAllAcademicSemestersFromDB = async () => {
+  const result = await AcademicSemester.find();
+  return result;
+};
+
+const getSingleAcademicSemesterFromDB = async (id: string) => {
+  const result = await AcademicSemester.findById(id);
   return result;
 };
 
@@ -47,6 +32,7 @@ const updateAcademicSemesterIntoDB = async (
   ) {
     throw new Error('Invalid Semester Code');
   }
+
   const result = await AcademicSemester.findOneAndUpdate({ _id: id }, payload, {
     new: true,
   });
@@ -55,7 +41,7 @@ const updateAcademicSemesterIntoDB = async (
 
 export const AcademicSemesterServices = {
   createAcademicSemesterIntoDB,
-  getAllAcademicSemester,
-  getSingleAcademicSemester,
+  getAllAcademicSemestersFromDB,
+  getSingleAcademicSemesterFromDB,
   updateAcademicSemesterIntoDB,
 };
