@@ -1,87 +1,28 @@
-import z from 'zod';
+import { z } from 'zod';
+import { AcademicSemesterCode, AcademicSemesterName, Months } from './academicSemester.constant';
 
-const AcademicSemesterZodValidationSchema = z.object({
-  name: z.enum(['Autumn', 'Summer', 'Fall'] as const, {
-    message: 'Semester name is required',
-  }),
-  code: z.enum(['01', '02', '03'] as const, {
-    message: 'Semester code is required',
-  }),
-  year: z
-    .string()
-    .refine((val) => !isNaN(Date.parse(val)), {
-      message: 'Invalid date format',
-    })
-    .transform((val) => new Date(val)),
 
-  startMonth: z.enum(
-    [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ] as const,
-    { message: 'Start month is required' },
-  ),
-  endMonth: z.enum(
-    [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ] as const,
-    { message: 'End month is required' },
-  ),
+const createAcdemicSemesterValidationSchema = z.object({
+  body: z.object({
+    name: z.enum([...AcademicSemesterName] as [string, ...string[]]),
+    year: z.string(),
+    code: z.enum([...AcademicSemesterCode] as [string, ...string[]]),
+    startMonth: z.enum([...Months] as [string, ...string[]]),
+    endMonth: z.enum([...Months] as [string, ...string[]]),
+  }),
 });
-
-// update academic semester zod validation
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-] as const;
 
 const updateAcademicSemesterValidationSchema = z.object({
-  name: z.enum(['Autumn', 'Summer', 'Fall'] as const).optional(),
-  code: z.enum(['01', '02', '03'] as const).optional(),
-  year: z
-    .string()
-    .refine((val) => !isNaN(Date.parse(val)), {
-      message: 'Invalid date format',
-    })
-    .transform((val) => new Date(val))
-    .optional(),
-  startMonth: z.enum(months).optional(),
-  endMonth: z.enum(months).optional(),
+  body: z.object({
+    name: z.enum([...AcademicSemesterName] as [string, ...string[]]).optional(),
+    year: z.string().optional(),
+    code: z.enum([...AcademicSemesterCode] as [string, ...string[]]).optional(),
+    startMonth: z.enum([...Months] as [string, ...string[]]).optional(),
+    endMonth: z.enum([...Months] as [string, ...string[]]).optional(),
+  }),
 });
 
-// Export validation object
-export const AcademicSemesterValidation = {
-  AcademicSemesterZodValidationSchema,
+export const AcademicSemesterValidations = {
+  createAcdemicSemesterValidationSchema,
   updateAcademicSemesterValidationSchema,
 };

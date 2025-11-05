@@ -32,6 +32,7 @@ const acdemicSemesterSchema = new Schema<TAcademicSemester>(
   },
   {
     timestamps: true,
+    versionKey: false
   },
 );
 
