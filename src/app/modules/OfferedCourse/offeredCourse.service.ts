@@ -10,7 +10,6 @@ import { OfferedCourse } from './offeredCourse.model';
 import { hasTimeConflict } from './offeredCourse.utils';
 import { TOfferedCourse } from './offeredCourse.interface';
 
-
 const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   const {
     semesterRegistration,

@@ -4,7 +4,6 @@ import catchAsync from '../../utlis/catchAsync';
 import { OfferedCourseServices } from './offeredCourse.service';
 import sendResponse from '../../utlis/sendResponse';
 
-
 const createOfferedCourse = catchAsync(async (req: Request, res: Response) => {
   const result = await OfferedCourseServices.createOfferedCourseIntoDB(
     req.body,
@@ -18,7 +17,9 @@ const createOfferedCourse = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllOfferedCourses = catchAsync(async (req: Request, res: Response) => {
-  const result = await OfferedCourseServices.getAllOfferedCoursesFromDB(req.query);
+  const result = await OfferedCourseServices.getAllOfferedCoursesFromDB(
+    req.query,
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -39,7 +40,6 @@ const getSingleOfferedCourses = catchAsync(
     });
   },
 );
-
 
 const updateOfferedCourse = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;

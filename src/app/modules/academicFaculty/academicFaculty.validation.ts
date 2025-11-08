@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const createAcademicFacultyZodValidation = z.object({
-   body: z.object({
+  body: z.object({
     name: z
       .string()
       .nonempty('Faculty name is required')

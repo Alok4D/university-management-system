@@ -3,7 +3,6 @@ import { OfferedCourseControllers } from './offeredCourse.controller';
 import { OfferedCourseValidations } from './offeredCourse.validation';
 import validateRequest from '../../middlwares/validateRequest';
 
-
 const router = express.Router();
 
 router.get('/', OfferedCourseControllers.getAllOfferedCourses);
@@ -22,9 +21,6 @@ router.patch(
   OfferedCourseControllers.updateOfferedCourse,
 );
 
-router.delete(
-  '/:id',
-  OfferedCourseControllers.deleteOfferedCourseFromDB,
-);
+router.delete('/:id', OfferedCourseControllers.deleteOfferedCourseFromDB);
 
 export const offeredCourseRoutes = router;
