@@ -1,4 +1,4 @@
-export type TLoginUSer = {
-    id: string;
-    password: string;
-}
+export type TLoginUser = {
+  id: string;
+  password: string;
+};
