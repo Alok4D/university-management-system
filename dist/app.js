@@ -28,10 +28,10 @@ app.use((0, cors_1.default)({
 // application routes
 app.use('/api/v1', routes_1.default);
 const test = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const a = 10;
-    res.send(a);
+    const message = "🎓 University Management System";
+    res.send(message);
 });
-app.get('/', test);
+app.get("/", test);
 app.use(globalErrorHandler_1.default);
 //Not Found
 app.use(notFound_1.default);

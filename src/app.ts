@@ -20,11 +20,11 @@ app.use(
 app.use('/api/v1', router);
 
 const test = async (req: Request, res: Response) => {
-  const a = 10;
-  res.send(a);
+  const message = "🎓 University Management System";
+  res.send(message);
 };
 
-app.get('/', test);
+app.get("/", test);
 
 app.use(globalErrorHandler);
 
